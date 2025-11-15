@@ -46,7 +46,7 @@ const Home: React.FC = () => {
         <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <h1>Welcome to NES Tundikhel</h1>
-            <p>Playground for testing Nepal Entity Service</p>
+            <p>Playground for testing <a href="https://nes.newnepal.org" target="_blank" rel="noopener noreferrer" style={{ color: '#60a5fa', textDecoration: 'underline' }}>Nepal Entity Service</a></p>
           </div>
 
           <div style={{ marginBottom: '20px' }}>
