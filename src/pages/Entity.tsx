@@ -1,28 +1,40 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
+import { useEntity } from '../hooks/useEntity';
+import { createEntityId } from '../common/identifiers';
+import { PersonDetails, OrganizationDetails, LocationDetails, EntityName } from '../components/entity_details';
+import type { Person, Organization, Location } from '../common/nes-types';
 
 const Entity: React.FC = () => {
-  const politician = {
-    name: "Harka Sampang",
-    type: "Person",
-    role: "Politician",
-    party: "Nepal Communist Party",
-    constituency: "Dhankuta-1",
-    birthDate: "1975-03-15",
-    education: "Master's in Political Science"
+  const location = useLocation();
+  
+  // Extract path after /entity/
+  const entityPath = location.pathname.replace('/entity/', '');
+  const entityId = entityPath ? createEntityId(entityPath) : null;
+  
+  const { entity, loading, error } = useEntity(entityId);
+
+  if (loading) return <div style={{ padding: '20px' }}>Loading...</div>;
+  if (error) return <div style={{ padding: '20px', color: 'red' }}>Error: {error}</div>;
+  if (!entity) return <div style={{ padding: '20px' }}>Entity not found</div>;
+
+  const renderEntityDetails = () => {
+    switch (entity.type) {
+      case 'person':
+        return <PersonDetails entity={entity as Person} />;
+      case 'organization':
+        return <OrganizationDetails entity={entity as Organization} />;
+      case 'location':
+        return <LocationDetails entity={entity as Location} />;
+      default:
+        return <div>Unknown entity type: {entity.type}</div>;
+    }
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-      <h1>Entity Information</h1>
-      <div style={{ marginTop: '20px' }}>
-        <p><strong>Name:</strong> {politician.name}</p>
-        <p><strong>Type:</strong> {politician.type}</p>
-        <p><strong>Role:</strong> {politician.role}</p>
-        <p><strong>Political Party:</strong> {politician.party}</p>
-        <p><strong>Constituency:</strong> {politician.constituency}</p>
-        <p><strong>Birth Date:</strong> {politician.birthDate}</p>
-        <p><strong>Education:</strong> {politician.education}</p>
-      </div>
+    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
+      <h1><EntityName names={entity.names} /></h1>
+      {renderEntityDetails()}
     </div>
   );
 };
