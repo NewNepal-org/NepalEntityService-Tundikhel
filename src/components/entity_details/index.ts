@@ -10,3 +10,6 @@ export { default as SubSectionHeader } from './SubSectionHeader';
 export { default as EducationSection } from './EducationSection';
 export { default as OccupationalHistorySection } from './OccupationalHistorySection';
 export { default as MarkdownText } from './MarkdownText';
+export { default as EntityLink } from './EntityLink';
+export { default as AttributesDisplay } from './AttributesDisplay';
+export { default as TagsDisplay } from './TagsDisplay';
