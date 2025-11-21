@@ -3,6 +3,8 @@ name: Test and Deploy
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   test-and-deploy:
@@ -29,6 +31,7 @@ jobs:
         git config --global user.name "NewNepal Robot 🤖"
     
     - name: Deploy
+      if: github.event_name == 'push'
       run: |
         git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         npm run deploy
