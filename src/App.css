@@ -74,3 +74,19 @@
     transform: rotate(360deg);
   }
 }
+
+/* responsive design for attribute tables */
+@media (max-width: 1024px) {
+  .attribute-row {
+    display: block !important;
+  }
+
+  .attribute-row td {
+    display: block;
+  }
+
+  .attribute-row td:first-child {
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-tertiary);
+  }
+}
