@@ -91,8 +91,39 @@ const Home: React.FC = () => {
             ))}
           </div>
 
-          {loading && <div style={{ color: 'var(--text-inverse)', transition: 'color 0.3s ease' }}>Searching...</div>}
-          {error && <div style={{ color: 'var(--error-text)', transition: 'color 0.3s ease' }}>Error: {error}</div>}
+
+          {loading && (
+            <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap: '10px', margin:'20px 0', color: 'var(--text-inverse)', transition: 'color 0.3s ease' }}>
+              <div className="spinner" /> Searching...
+            </div>
+          )}
+
+           {error && (
+              <div style={{
+                color: 'var(--error-text)',
+                background: 'rgba(255,0,0,0.1)',
+                border: '1px solid rgba(255,0,0,0.3)',
+                padding: '12px',
+                borderRadius: '6px',
+                marginBottom: '20px'
+              }}>
+                ❌ Something went wrong, Please try again. <br /> Error: {error}
+              </div>
+            )}
+
+          {!loading && !error && total === 0 && query.trim() !== '' && (
+            <div style={{
+              marginTop: '20px',
+              padding: '15px',
+              textAlign: 'center',
+              color: 'var(--text-secondary)',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '6px'
+            }}>
+              No results found for “{query}”
+            </div>
+          )}
 
           {total > 0 && (
             <div style={{ marginBottom: '10px', color: 'var(--text-inverse)', transition: 'color 0.3s ease' }}>
