@@ -41,7 +41,7 @@ const Home: React.FC = () => {
       <div style={{
         backgroundColor: 'var(--bg-overlay)',
         backdropFilter: 'blur(2px)',
-        marginTop: '20vh',
+        marginTop: '10vh',
         minHeight: '100vh',
         transition: 'background-color 0.3s ease',
       }}>
