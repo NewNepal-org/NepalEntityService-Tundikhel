@@ -17,7 +17,10 @@ const DetailField: React.FC<DetailFieldProps> = ({ label, labelNe, children }) =
         backgroundColor: 'var(--bg-tertiary)',
         color: 'var(--text-primary)',
         fontSize: '0.95em',
-        transition: 'background-color 0.3s ease, color 0.3s ease'
+        transition: 'background-color 0.3s ease, color 0.3s ease',
+        wordWrap: 'break-word',
+        overflowWrap: 'anywhere',
+        minWidth: '100px',
       }}>
         {label}
         {labelNe && (

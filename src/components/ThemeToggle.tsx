@@ -18,7 +18,8 @@ const ThemeToggle: React.FC = () => {
         alignItems: 'center',
         gap: '8px',
         transition: 'all 0.2s ease',
-        fontSize: '14px'
+        fontSize: '14px',
+        width: 'fit-content'
       }}
       onMouseOver={(e) => {
         e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';

@@ -1,8 +1,11 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .logo {
@@ -39,4 +42,54 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Hide desktop menu on small screens */
+@media (max-width: 768px) {
+  .desktop-menu {
+    display: none !important;
+  }
+
+  .mobile-hamburger {
+    display: block !important;
+  }
+}
+
+/* On large screens hide the mobile menu */
+@media (min-width: 769px) {
+  .mobile-menu {
+    display: none !important;
+  }
+}
+
+/* spinning loader */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 3px solid rgba(255,255,255,0.2);
+  border-top-color: var(--link-color);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* responsive design for attribute tables */
+@media (max-width: 1024px) {
+  .attribute-row {
+    display: block !important;
+  }
+
+  .attribute-row td {
+    display: block;
+  }
+
+  .attribute-row td:first-child {
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-tertiary);
+  }
 }
