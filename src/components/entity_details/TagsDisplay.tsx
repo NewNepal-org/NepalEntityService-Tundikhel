@@ -10,7 +10,7 @@ const TagsDisplay: React.FC<TagsDisplayProps> = ({ tags }) => {
   }
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
       {tags.map((tag, index) => (
         <span
           key={index}
