@@ -2,8 +2,8 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useEntity } from '../hooks/useEntity';
 import { createEntityId } from '../common/identifiers';
-import { PersonDetails, OrganizationDetails, LocationDetails, EntityName } from '../components/entity_details';
-import type { Person, Organization, Location } from '../common/nes-types';
+import { PersonDetails, OrganizationDetails, LocationDetails, ProjectDetails, EntityName } from '../components/entity_details';
+import type { Person, Organization, Location, Project } from '../common/nes-types';
 
 const Entity: React.FC = () => {
   const location = useLocation();
@@ -81,6 +81,8 @@ const Entity: React.FC = () => {
         return <OrganizationDetails entity={entity as Organization} />;
       case 'location':
         return <LocationDetails entity={entity as Location} />;
+      case 'project':
+        return <ProjectDetails entity={entity as Project} />;
       default:
         return <div>Unknown entity type: {entity.type}</div>;
     }

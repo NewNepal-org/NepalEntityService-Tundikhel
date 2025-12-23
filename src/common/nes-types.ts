@@ -40,7 +40,7 @@ export type ContactType =
 /**
  * Type of entity
  */
-export type EntityType = "person" | "organization" | "location";
+export type EntityType = "person" | "organization" | "location" | "project";
 /**
  * Subtypes for entities with Nepali-specific classifications.
  *
@@ -74,7 +74,8 @@ export type EntitySubType =
   | "municipality"
   | "rural_municipality"
   | "ward"
-  | "constituency";
+  | "constituency"
+  | "development_project";
 /**
  * Type of name
  */
@@ -118,6 +119,34 @@ export type LocationType =
  * Gender enumeration.
  */
 export type Gender = "male" | "female" | "other";
+/**
+ * Project lifecycle stage - aligned with DFMIS project_status.
+ */
+export type ProjectStage =
+  | "pipeline"
+  | "planning"
+  | "approved"
+  | "ongoing"
+  | "completed"
+  | "suspended"
+  | "terminated"
+  | "cancelled"
+  | "unknown";
+/**
+ * Type of development assistance - from DFMIS commitment.assistance_type.
+ */
+export type AssistanceType =
+  | "grant"
+  | "loan"
+  | "technical_assistance"
+  | "in_kind"
+  | "mixed"
+  | "other"
+  | "unknown";
+/**
+ * Budget classification - from DFMIS.
+ */
+export type BudgetType = "on_budget" | "off_budget" | "unknown";
 
 /**
  * Address information.
@@ -1051,4 +1080,238 @@ export interface CursorPage {
   has_more: boolean;
   offset?: number;
   count: number;
+}
+/**
+ * Loan/grant terms - captures DFMIS commitment details.
+ */
+export interface FinancingTerms {
+  /**
+   * Annual interest rate (%)
+   */
+  interest_rate?: number | null;
+  /**
+   * Total repayment period
+   */
+  repayment_period_years?: number | null;
+  /**
+   * Grace period before repayment
+   */
+  grace_period_years?: number | null;
+  /**
+   * tied, untied, partially_tied, general_untied
+   */
+  tying_status?: string | null;
+}
+/**
+ * Single financing commitment from a donor.
+ */
+export interface FinancingCommitment {
+  /**
+   * Donor organization name
+   */
+  donor: string;
+  /**
+   * Entity ID reference (entity:organization/...)
+   */
+  donor_id?: string | null;
+  /**
+   * Amount in specified currency
+   */
+  amount?: number | null;
+  /**
+   * ISO 4217 currency code
+   */
+  currency?: string | null;
+  assistance_type?: AssistanceType;
+  /**
+   * Project Support, Program-Based Support, Budget Support, etc.
+   */
+  financing_instrument?: string | null;
+  budget_type?: BudgetType | null;
+  terms?: FinancingTerms | null;
+  /**
+   * Date of commitment/disbursement
+   */
+  transaction_date?: string | null;
+  /**
+   * commitment, disbursement, expenditure
+   */
+  transaction_type?: string | null;
+  /**
+   * False if planned/projected
+   */
+  is_actual?: boolean;
+  /**
+   * Data source: DFMIS, WB, ADB, JICA
+   */
+  source?: string | null;
+}
+/**
+ * Project milestone date.
+ */
+export interface ProjectDateEvent {
+  date: string;
+  /**
+   * APPROVAL, EFFECTIVENESS, START, COMPLETION, CLOSING, etc.
+   */
+  type: string;
+  /**
+   * DFMIS, WB, ADB, JICA, NPC
+   */
+  source?: string | null;
+}
+/**
+ * Sector classification with normalization.
+ */
+export interface SectorMapping {
+  /**
+   * MoF-normalized sector code or name
+   */
+  normalized_sector?: string | null;
+  /**
+   * Sector as reported by the donor
+   */
+  donor_sector?: string | null;
+  donor_subsector?: string | null;
+  donor?: string | null;
+  /**
+   * Sector allocation percentage (0-100)
+   */
+  percentage?: number | null;
+}
+/**
+ * Cross-cutting themes and policy markers.
+ */
+export interface CrossCuttingTag {
+  /**
+   * GENDER, CLIMATE, DISABILITY, SDG, GOVERNANCE, THEME
+   */
+  category: string;
+  normalized_tag?: string | null;
+  donor_tag?: string | null;
+  donor?: string | null;
+}
+/**
+ * Donor-specific data extension for traceability.
+ */
+export interface DonorExtension {
+  /**
+   * WB, ADB, JICA, NPC, DFMIS
+   */
+  donor: string;
+  /**
+   * WB P-number, ADB IATI identifier, JICA project code, DFMIS id
+   */
+  donor_project_id?: string | null;
+  /**
+   * Original donor payload for traceability
+   */
+  raw_payload?: {
+    [k: string]: unknown;
+  } | null;
+}
+/**
+ * Development project entity - DFMIS-aligned unified model.
+ */
+export interface Project {
+  /**
+   * URL-friendly identifier for the entity
+   */
+  slug: string;
+  /**
+   * Entity type, always project
+   */
+  type?: "project";
+  /**
+   * Project subtype classification
+   */
+  sub_type?: "development_project" | null;
+  /**
+   * List of names associated with the entity
+   */
+  names: Name[];
+  /**
+   * List of misspelled or alternative name variations
+   */
+  misspelled_names?: Name[] | null;
+  version_summary: VersionSummary;
+  /**
+   * Timestamp when the entity was created
+   */
+  created_at: string;
+  /**
+   * External identifiers for the entity
+   */
+  identifiers?: ExternalIdentifier[] | null;
+  /**
+   * Tags for categorizing the entity
+   */
+  tags?: CrossCuttingTag[] | null;
+  /**
+   * Additional attributes for the entity.
+   */
+  attributes?: {
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Contact information for the entity
+   */
+  contacts?: Contact[] | null;
+  /**
+   * Brief description of the entity
+   */
+  short_description?: LangText | null;
+  /**
+   * Detailed description of the entity
+   */
+  description?: LangText | null;
+  /**
+   * Sources and attributions for the entity data
+   */
+  attributions?: Attribution[] | null;
+  /**
+   * Pictures associated with the entity
+   */
+  pictures?: EntityPicture[] | null;
+  /**
+   * Project lifecycle stage
+   */
+  stage?: ProjectStage;
+  /**
+   * Primary implementing agency name
+   */
+  implementing_agency?: string | null;
+  /**
+   * Primary executing agency name
+   */
+  executing_agency?: string | null;
+  /**
+   * Financing commitments/disbursements from donors
+   */
+  financing?: FinancingCommitment[] | null;
+  /**
+   * Total committed amount (usually USD)
+   */
+  total_commitment?: number | null;
+  /**
+   * Total disbursed amount (usually USD)
+   */
+  total_disbursement?: number | null;
+  /**
+   * Project timeline dates
+   */
+  dates?: ProjectDateEvent[] | null;
+  /**
+   * Sector classifications
+   */
+  sectors?: SectorMapping[] | null;
+  /**
+   * Donor extensions for raw payload preservation
+   */
+  donor_extensions?: DonorExtension[] | null;
+  /**
+   * Primary project URL
+   */
+  project_url?: string | null;
+  id: string;
 }
