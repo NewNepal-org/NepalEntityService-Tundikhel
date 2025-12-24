@@ -14,6 +14,10 @@ const Home: React.FC = () => {
         return { entity_type: 'organization', sub_type: 'government_body' };
       case 'hospital':
         return { entity_type: 'organization', sub_type: 'hospital' };
+      case 'ngo':
+        return { entity_type: 'organization', sub_type: 'ngo' };
+      case 'international_org':
+        return { entity_type: 'organization', sub_type: 'international_org' };
       case 'location':
         return { entity_type: 'location' };
       case 'development_project':
@@ -81,6 +85,8 @@ const Home: React.FC = () => {
               { value: 'political_party', label: 'Political Party' },
               { value: 'government_body', label: 'Government Body' },
               { value: 'hospital', label: 'Hospital' },
+              { value: 'ngo', label: 'NGO' },
+              { value: 'international_org', label: 'International Organization' },
               { value: 'location', label: 'Administrative Levels (Location)' },
               { value: 'development_project', label: 'Development Projects' }
             ].map(({ value, label }) => (
