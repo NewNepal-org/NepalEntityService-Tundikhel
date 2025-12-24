@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useEntity } from '../hooks/useEntity';
 import { createEntityId } from '../common/identifiers';
-import { PersonDetails, OrganizationDetails, LocationDetails, ProjectDetails, EntityName } from '../components/entity_details';
+import { PersonDetails, OrganizationDetails, LocationDetails, ProjectDetails, NGODetails, InternationalOrgDetails, EntityName } from '../components/entity_details';
 import type { Person, Organization, Location, Project } from '../common/nes-types';
 
 const Entity: React.FC = () => {
@@ -78,7 +78,14 @@ const Entity: React.FC = () => {
       case 'person':
         return <PersonDetails entity={entity as Person} />;
       case 'organization':
-        return <OrganizationDetails entity={entity as Organization} />;
+        // Route to specific organization detail components based on sub_type
+        if (entity.sub_type === 'ngo') {
+          return <NGODetails entity={entity as Organization} />;
+        } else if (entity.sub_type === 'international_org') {
+          return <InternationalOrgDetails entity={entity as Organization} />;
+        } else {
+          return <OrganizationDetails entity={entity as Organization} />;
+        }
       case 'location':
         return <LocationDetails entity={entity as Location} />;
       case 'project':
