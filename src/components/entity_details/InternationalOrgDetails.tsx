@@ -45,7 +45,7 @@ const InternationalOrgDetails: React.FC<InternationalOrgDetailsProps> = ({ entit
           <DetailField label="Name" labelNe="नाम"><EntityName names={entity.names} /></DetailField>
           <DetailField label="Short Description" labelNe="छोटो विवरण">{entity.short_description ? <LangText text={entity.short_description} /> : null}</DetailField>
           <DetailField label="Description" labelNe="विवरण">{entity.description ? <MarkdownText text={entity.description} /> : null}</DetailField>
-          <DetailField label="Established" labelNe="स्थापना मिति">{entity.created_at}</DetailField>
+          <DetailField label="Record Created" labelNe="रेकर्ड सिर्जना मिति">{entity.created_at}</DetailField>
 
           {entity.contacts && entity.contacts.length > 0 && (
             <>
