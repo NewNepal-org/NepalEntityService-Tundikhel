@@ -150,7 +150,9 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
               <tr>
                 <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    {electoral.candidacies.map((candidacy, index) => (
+                    {[...electoral.candidacies]
+                      .sort((a, b) => b.election_year - a.election_year)
+                      .map((candidacy, index) => (
                       <div
                         key={
                           candidacy.candidate_id &&
