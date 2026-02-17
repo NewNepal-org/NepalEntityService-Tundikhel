@@ -152,7 +152,13 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {electoral.candidacies.map((candidacy, index) => (
                       <div
-                        key={index}
+                        key={
+                          candidacy.candidate_id &&
+                          candidacy.election_year &&
+                          candidacy.election_type
+                            ? `${candidacy.candidate_id}-${candidacy.election_year}-${candidacy.election_type}`
+                            : index
+                        }
                         style={{
                           border: '1px solid var(--border-color)',
                           borderRadius: '6px',
@@ -199,10 +205,10 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
                               </span>
                             </div>
                           </div>
-                          {candidacy.elected !== undefined && (
+                          {candidacy.elected !== null && candidacy.elected !== undefined && (
                             <span style={{
-                              backgroundColor: candidacy.elected ? '#10b981' : '#6b7280',
-                              color: 'white',
+                              backgroundColor: candidacy.elected ? 'var(--success-bg)' : 'var(--bg-tertiary)',
+                              color: candidacy.elected ? 'var(--success-text)' : 'var(--text-primary)',
                               padding: '6px 14px',
                               borderRadius: '16px',
                               fontSize: '0.85em',
@@ -225,7 +231,7 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
                           {candidacy.constituency_id && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                               <span style={{ fontSize: '0.85em', color: 'var(--text-secondary)', fontWeight: '500' }}>
-                                Constituency
+                                Constituency <span style={{ fontSize: '0.95em' }}>/ निर्वाचन क्षेत्र</span>
                               </span>
                               <span style={{ color: 'var(--text-primary)' }}>
                                 {candidacy.constituency_id.startsWith('entity:') ? (
@@ -238,26 +244,28 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
                               </span>
                             </div>
                           )}
-                          {candidacy.party_id && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                              <span style={{ fontSize: '0.85em', color: 'var(--text-secondary)', fontWeight: '500' }}>
-                                Political Party
-                              </span>
-                              <span style={{ color: 'var(--text-primary)' }}>
-                                {candidacy.party_id.startsWith('entity:') ? (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                            <span style={{ fontSize: '0.85em', color: 'var(--text-secondary)', fontWeight: '500' }}>
+                              Political Party <span style={{ fontSize: '0.95em' }}>/ राजनीतिक दल</span>
+                            </span>
+                            <span style={{ color: 'var(--text-primary)' }}>
+                              {candidacy.party_id ? (
+                                candidacy.party_id.startsWith('entity:') ? (
                                   <EntityLink entityId={candidacy.party_id}>
                                     {candidacy.party_id.split('/').pop()?.replace(/-/g, ' ')}
                                   </EntityLink>
                                 ) : (
-                                  candidacy.party_id || <em style={{ color: 'var(--text-secondary)' }}>Independent</em>
-                                )}
-                              </span>
-                            </div>
-                          )}
+                                  candidacy.party_id
+                                )
+                              ) : (
+                                <em style={{ color: 'var(--text-secondary)' }}>Independent / स्वतन्त्र</em>
+                              )}
+                            </span>
+                          </div>
                           {candidacy.votes_received !== null && candidacy.votes_received !== undefined && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                               <span style={{ fontSize: '0.85em', color: 'var(--text-secondary)', fontWeight: '500' }}>
-                                Votes Received
+                                Votes Received <span style={{ fontSize: '0.95em' }}>/ प्राप्त मत</span>
                               </span>
                               <span style={{ color: 'var(--text-primary)', fontWeight: '600', fontSize: '1.05em' }}>
                                 {candidacy.votes_received.toLocaleString()}
@@ -267,7 +275,7 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
                           {candidacy.symbol?.symbol_name && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                               <span style={{ fontSize: '0.85em', color: 'var(--text-secondary)', fontWeight: '500' }}>
-                                Election Symbol
+                                Election Symbol <span style={{ fontSize: '0.95em' }}>/ चुनाव चिन्ह</span>
                               </span>
                               <span style={{ color: 'var(--text-primary)' }}>
                                 <LangText text={candidacy.symbol.symbol_name} />
@@ -277,17 +285,15 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
                         </div>
 
                         {/* Footer with Candidate ID */}
-                        {candidacy.candidate_id && (
-                          <div style={{ 
-                            marginTop: '12px',
-                            paddingTop: '12px',
-                            borderTop: '1px solid var(--border-color)',
-                            fontSize: '0.8em',
-                            color: 'var(--text-secondary)'
-                          }}>
-                            Candidate ID: {candidacy.candidate_id}
-                          </div>
-                        )}
+                        <div style={{ 
+                          marginTop: '12px',
+                          paddingTop: '12px',
+                          borderTop: '1px solid var(--border-color)',
+                          fontSize: '0.8em',
+                          color: 'var(--text-secondary)'
+                        }}>
+                          Candidate ID / उम्मेदवार आईडी: {candidacy.candidate_id}
+                        </div>
                       </div>
                     ))}
                   </div>
