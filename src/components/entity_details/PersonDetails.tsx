@@ -21,7 +21,6 @@ interface PersonDetailsProps {
 const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
   const personal = entity.personal_details;
   const electoral = entity.electoral_details;
-  const candidacy = electoral?.candidacies?.[0];
 
   const getElectionTypeNepali = (type: string) => {
     const translations: { [key: string]: string } = {
@@ -147,66 +146,156 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
             <OccupationalHistorySection positions={personal?.positions} />
 
             <SectionHeader title="Electoral History" />
-            <DetailField label="Election Year" labelNe="चुनाव वर्ष">{candidacy?.election_year}</DetailField>
-            <DetailField label="Election Type & Position" labelNe="चुनाव प्रकार र पद">
-              {candidacy?.election_type && candidacy?.position ? (
-                candidacy.election_type === 'federal' || candidacy.election_type === 'provincial' ? (
-                  <>
-                    {candidacy.position}{candidacy.pa_subdivision ? ` (${candidacy.pa_subdivision})` : ''}<br />
-                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9em' }}>
-                      {getPositionNepali(candidacy.position)}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    {candidacy.election_type} - {candidacy.position}<br />
-                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9em' }}>
-                      {getElectionTypeNepali(candidacy.election_type)} - {getPositionNepali(candidacy.position)}
-                    </span>
-                  </>
-                )
-              ) : (
-                candidacy?.election_type || candidacy?.position
-              )}
-            </DetailField>
-            <DetailField label="Constituency ID" labelNe="निर्वाचन क्षेत्र आईडी">
-              {candidacy?.constituency_id ? (
-                candidacy.constituency_id.startsWith('entity:') ? (
-                  <EntityLink entityId={candidacy.constituency_id}>{candidacy.constituency_id}</EntityLink>
-                ) : (
-                  candidacy.constituency_id
-                )
-              ) : null}
-            </DetailField>
+            {electoral?.candidacies && electoral.candidacies.length > 0 ? (
+              <tr>
+                <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {electoral.candidacies.map((candidacy, index) => (
+                      <div
+                        key={index}
+                        style={{
+                          border: '1px solid var(--border-color)',
+                          borderRadius: '6px',
+                          padding: '16px',
+                          backgroundColor: 'var(--bg-secondary)',
+                          boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        {/* Header Row */}
+                        <div style={{ 
+                          display: 'flex', 
+                          justifyContent: 'space-between', 
+                          alignItems: 'flex-start',
+                          paddingBottom: '12px',
+                          borderBottom: '1px solid var(--border-color)',
+                          marginBottom: '12px',
+                          gap: '12px'
+                        }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ 
+                              fontSize: '1.05em', 
+                              fontWeight: '600',
+                              color: 'var(--text-primary)',
+                              marginBottom: '4px'
+                            }}>
+                              {candidacy.election_year} {candidacy.election_type.charAt(0).toUpperCase() + candidacy.election_type.slice(1)} Election
+                            </div>
+                            <div style={{ 
+                              fontSize: '0.95em', 
+                              color: 'var(--text-primary)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              flexWrap: 'wrap'
+                            }}>
+                              <span style={{ fontWeight: '500' }}>
+                                {candidacy.position?.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                {candidacy.pa_subdivision && ` (${candidacy.pa_subdivision})`}
+                              </span>
+                              <span style={{ color: 'var(--text-secondary)' }}>•</span>
+                              <span style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
+                                {candidacy.position ? getPositionNepali(candidacy.position) : getElectionTypeNepali(candidacy.election_type)}
+                              </span>
+                            </div>
+                          </div>
+                          {candidacy.elected !== undefined && (
+                            <span style={{
+                              backgroundColor: candidacy.elected ? '#10b981' : '#6b7280',
+                              color: 'white',
+                              padding: '6px 14px',
+                              borderRadius: '16px',
+                              fontSize: '0.85em',
+                              fontWeight: '600',
+                              whiteSpace: 'nowrap',
+                              boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+                            }}>
+                              {candidacy.elected ? '✓ Elected' : 'Not Elected'}
+                            </span>
+                          )}
+                        </div>
+                        
+                        {/* Details Grid */}
+                        <div style={{ 
+                          display: 'grid', 
+                          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
+                          gap: '12px',
+                          fontSize: '0.9em'
+                        }}>
+                          {candidacy.constituency_id && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                              <span style={{ fontSize: '0.85em', color: 'var(--text-secondary)', fontWeight: '500' }}>
+                                Constituency
+                              </span>
+                              <span style={{ color: 'var(--text-primary)' }}>
+                                {candidacy.constituency_id.startsWith('entity:') ? (
+                                  <EntityLink entityId={candidacy.constituency_id}>
+                                    {candidacy.constituency_id.split('/').pop()?.replace(/-/g, ' ')}
+                                  </EntityLink>
+                                ) : (
+                                  candidacy.constituency_id
+                                )}
+                              </span>
+                            </div>
+                          )}
+                          {candidacy.party_id && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                              <span style={{ fontSize: '0.85em', color: 'var(--text-secondary)', fontWeight: '500' }}>
+                                Political Party
+                              </span>
+                              <span style={{ color: 'var(--text-primary)' }}>
+                                {candidacy.party_id.startsWith('entity:') ? (
+                                  <EntityLink entityId={candidacy.party_id}>
+                                    {candidacy.party_id.split('/').pop()?.replace(/-/g, ' ')}
+                                  </EntityLink>
+                                ) : (
+                                  candidacy.party_id || <em style={{ color: 'var(--text-secondary)' }}>Independent</em>
+                                )}
+                              </span>
+                            </div>
+                          )}
+                          {candidacy.votes_received !== null && candidacy.votes_received !== undefined && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                              <span style={{ fontSize: '0.85em', color: 'var(--text-secondary)', fontWeight: '500' }}>
+                                Votes Received
+                              </span>
+                              <span style={{ color: 'var(--text-primary)', fontWeight: '600', fontSize: '1.05em' }}>
+                                {candidacy.votes_received.toLocaleString()}
+                              </span>
+                            </div>
+                          )}
+                          {candidacy.symbol?.symbol_name && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                              <span style={{ fontSize: '0.85em', color: 'var(--text-secondary)', fontWeight: '500' }}>
+                                Election Symbol
+                              </span>
+                              <span style={{ color: 'var(--text-primary)' }}>
+                                <LangText text={candidacy.symbol.symbol_name} />
+                              </span>
+                            </div>
+                          )}
+                        </div>
 
-            <DetailField label="Candidate ID" labelNe="उम्मेदवार आईडी">{candidacy?.candidate_id}</DetailField>
-            <DetailField label="Party ID" labelNe="पार्टी आईडी">
-              {candidacy?.party_id ? (
-                candidacy.party_id.startsWith('entity:') ? (
-                  <EntityLink entityId={candidacy.party_id}>{candidacy.party_id}</EntityLink>
-                ) : (
-                  candidacy.party_id
-                )
-              ) : null}
-            </DetailField>
-            <DetailField label="Votes Received" labelNe="प्राप्त मत">{candidacy?.votes_received?.toLocaleString()}</DetailField>
-            <DetailField label="Elected" labelNe="निर्वाचित">
-              {candidacy?.elected !== undefined ? (
-                <span style={{
-                  backgroundColor: candidacy.elected ? 'var(--success-bg)' : 'var(--error-bg)',
-                  color: candidacy.elected ? 'var(--success-text)' : 'var(--error-text)',
-                  padding: '2px 8px',
-                  borderRadius: '12px',
-                  fontSize: '0.85em',
-                  fontWeight: 'bold',
-                  transition: 'background-color 0.3s ease, color 0.3s ease'
-                }}>
-                  {candidacy.elected ? 'Yes' : 'No'}
-                </span>
-              ) : null}
-            </DetailField>
-            <DetailField label="Election Symbol" labelNe="चुनाव चिन्ह">{candidacy?.symbol?.symbol_name ? <LangText text={candidacy.symbol.symbol_name} /> : null}</DetailField>
-
+                        {/* Footer with Candidate ID */}
+                        {candidacy.candidate_id && (
+                          <div style={{ 
+                            marginTop: '12px',
+                            paddingTop: '12px',
+                            borderTop: '1px solid var(--border-color)',
+                            fontSize: '0.8em',
+                            color: 'var(--text-secondary)'
+                          }}>
+                            Candidate ID: {candidacy.candidate_id}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              <DetailField label="Electoral History"><em>No electoral candidacy records found</em></DetailField>
+            )}
 
             <SectionHeader title="Miscellaneous" />
             <DetailField label="Slug" labelNe="स्लग">{entity.slug}</DetailField>
