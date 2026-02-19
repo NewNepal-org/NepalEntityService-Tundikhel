@@ -9,9 +9,7 @@ interface AttributesDisplayProps {
 const AttributesDisplay: React.FC<AttributesDisplayProps> = ({ attributes }) => {
   const renderValue = (value: unknown, key: string): React.ReactNode => {
 
-    // ───────────────────────────────────────────────
     // Handle LangText objects
-    // ───────────────────────────────────────────────
     if (
       value &&
       typeof value === 'object' &&
@@ -33,14 +31,19 @@ const AttributesDisplay: React.FC<AttributesDisplayProps> = ({ attributes }) => 
       }
     }
 
-    // ───────────────────────────────────────────────
     // Handle arrays
-    // ───────────────────────────────────────────────
     if (Array.isArray(value)) {
       return (
-        <ul style={{ margin: '6px 0', paddingLeft: '20px' }}>
+        <ul style={{ 
+          margin: '4px 0', 
+          paddingLeft: '20px',
+          listStyleType: 'disc'
+        }}>
           {value.map((item, index) => (
-            <li key={index} style={{ marginBottom: '4px' }}>
+            <li key={index} style={{ 
+              marginBottom: '6px',
+              color: 'var(--text-primary)'
+            }}>
               {renderValue(item, `${key}[${index}]`)}
             </li>
           ))}
@@ -48,159 +51,105 @@ const AttributesDisplay: React.FC<AttributesDisplayProps> = ({ attributes }) => 
       );
     }
 
-    // ───────────────────────────────────────────────
     // Handle nested objects
-    // ───────────────────────────────────────────────
     if (value && typeof value === 'object') {
       return (
-        <table
-          style={{
-            width: '100%',
-            borderCollapse: 'separate',
-            borderSpacing: '0 4px',
-            fontSize: '0.88em',
-            marginTop: '6px',
-          }}
-        >
-          <tbody>
-            {Object.entries(value).map(([nestedKey, nestedValue]) => (
-              <tr
-                key={nestedKey}
+        <div style={{ 
+          marginTop: '8px',
+          marginLeft: '12px',
+          paddingLeft: '12px',
+          borderLeft: '3px solid var(--border-color)'
+        }}>
+          {Object.entries(value).map(([nestedKey, nestedValue]) => (
+            <div
+              key={nestedKey}
+              style={{
+                marginBottom: '8px',
+                paddingBottom: '8px',
+                borderBottom: '1px solid var(--border-light)',
+              }}
+            >
+              <div
                 style={{
-                  backgroundColor: 'var(--bg-secondary)',
-                  borderRadius: '6px',
-                  overflow: 'hidden',
-                  display: 'block',
-                  width: '100%',
+                  fontSize: '0.85em',
+                  fontWeight: 600,
+                  color: 'var(--text-secondary)',
+                  marginBottom: '4px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
                 }}
               >
-                <td
-                  style={{
-                    padding: '8px 12px',
-                    fontWeight: 900,
-                    verticalAlign: 'top',
-                    width: '100%',
-                    borderRight: `1px solid var(--border-light)`,
-                    color: 'var(--text-secondary)',
-                    backgroundColor: 'var(--bg-tertiary)',
-                    borderTopLeftRadius: '6px',
-                    borderBottomLeftRadius: '6px',
-                    display: 'inline-block',
-                  }}
-                >
-                  {nestedKey}
-                </td>
-                <td
-                  style={{
-                    padding: '8px 12px',
-                    verticalAlign: 'top',
-                    color: 'var(--text-primary)',
-                    borderTopRightRadius: '6px',
-                    borderBottomRightRadius: '6px',
-                  }}
-                >
-                  {renderValue(nestedValue, `${key}.${nestedKey}`)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                {nestedKey}
+              </div>
+              <div
+                style={{
+                  fontSize: '0.92em',
+                  color: 'var(--text-primary)',
+                  paddingLeft: '8px'
+                }}
+              >
+                {renderValue(nestedValue, `${key}.${nestedKey}`)}
+              </div>
+            </div>
+          ))}
+        </div>
       );
     }
 
-    // ───────────────────────────────────────────────
     // Null / undefined
-    // ───────────────────────────────────────────────
     if (value === null || value === undefined) {
-      return <em style={{ color: 'var(--text-tertiary)' }}>not available</em>;
+      return null;
     }
 
-    // ───────────────────────────────────────────────
     // Boolean
-    // ───────────────────────────────────────────────
     if (typeof value === 'boolean') {
       return (
         <span
           style={{
-            backgroundColor: value ? 'var(--success-bg)' : 'var(--error-bg)',
-            color: value ? 'var(--success-text)' : 'var(--error-text)',
-            padding: '3px 10px',
-            borderRadius: '12px',
+            display: 'inline-block',
+            backgroundColor: value ? '#d4edda' : '#f8d7da',
+            color: value ? '#155724' : '#721c24',
+            padding: '4px 12px',
+            borderRadius: '4px',
             fontSize: '0.85em',
             fontWeight: 600,
+            border: value ? '1px solid #c3e6cb' : '1px solid #f5c6cb'
           }}
         >
-          {value ? 'true' : 'false'}
+          {value ? '✓ true' : '✗ false'}
         </span>
       );
     }
 
-    // ───────────────────────────────────────────────
     // Default: string, number, etc.
-    // ───────────────────────────────────────────────
-    return <span>{String(value)}</span>;
+    return <span style={{ color: 'var(--text-primary)' }}>{String(value)}</span>;
   };
 
   return (
-    <table
-      style={{
-        width: '100%',
-        borderCollapse: 'separate',
-        borderSpacing: '0 6px',
-        fontSize: '0.95em',
-        marginTop: '10px',
-      }}
-    >
-      <tbody>
-        {Object.entries(attributes).map(([key, value]) => (
-          <tr
-            key={key}
-            className="attribute-row"
-            style={{
-              backgroundColor: 'var(--bg-secondary)',
-              borderRadius: '8px',
-              overflow: 'hidden',
-              display: 'block',
-              transition: 'background-color 0.25s ease',
-            }}
-          >
-            {/* Label Cell */}
-            <td
-              style={{
-                padding: '10px 14px',
-                fontWeight: 600,
-                verticalAlign: 'top',
-                color: 'var(--text-primary)',
-                backgroundColor: 'var(--bg-tertiary)',
-                borderRight: `1px solid var(--border-light)`,
-                borderRadius: '0',
-                width: '100%',
-                display: 'inline-block',
-              }}
-            >
-              {key}
-            </td>
-
-            {/* Value Cell */}
-            <td
-              style={{
-                padding: '10px 14px',
-                verticalAlign: 'top',
-                color: 'var(--text-primary)',
-                borderTopRightRadius: '8px',
-                borderBottomRightRadius: '8px',
-                lineHeight: '1.45',
-                textAlign: 'left',
-                width: 'fit-content',
-
-              }}
-            >
-              {renderValue(value, key)}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div style={{ 
+      display: 'grid',
+      gap: '12px',
+      marginTop: '8px'
+    }}>
+      {Object.entries(attributes).map(([key, value]) => (
+        <div
+          key={key}
+          style={{
+            border: '1px solid var(--border-color)',
+            borderRadius: '6px',
+            overflow: 'hidden',
+            backgroundColor: 'var(--bg-primary)',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+            padding: '12px 16px',
+            color: 'var(--text-primary)',
+            lineHeight: '1.6',
+            fontSize: '0.95em'
+          }}
+        >
+          {renderValue(value, key)}
+        </div>
+      ))}
+    </div>
   );
 };
 

@@ -19,7 +19,6 @@ export function useEntitySearch(query: string, filters: SearchFilters = {}) {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const filtersString = JSON.stringify(filters);
 
   useEffect(() => {
     if (!query || query.length < 2) {
@@ -44,9 +43,10 @@ export function useEntitySearch(query: string, filters: SearchFilters = {}) {
       }
     };
 
-    const timeoutId = setTimeout(searchEntities, 300);
+    const timeoutId = setTimeout(searchEntities, 500);
     return () => clearTimeout(timeoutId);
-  }, [query, filtersString, filters]);
+    
+  }, [query, filters]);
 
   return { results, total, loading, error };
 }

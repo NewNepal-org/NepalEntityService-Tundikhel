@@ -43,7 +43,7 @@ const OrganizationDetails: React.FC<OrganizationDetailsProps> = ({ entity }) => 
         transition: 'background-color 0.3s ease, border-color 0.3s ease'
       }}>
         <tbody>
-          <SectionHeader title="Organization Details" />
+          <SectionHeader title="Organization Details / संगठन विवरण" />
           <DetailField label="ID" labelNe="आईडी">{entity.id}</DetailField>
           <DetailField label="Name" labelNe="नाम"><EntityName names={entity.names} /></DetailField>
           <DetailField label="Type" labelNe="प्रकार">{entity.sub_type?.replace('_', ' ') || 'Organization'}</DetailField>
@@ -60,39 +60,84 @@ const OrganizationDetails: React.FC<OrganizationDetailsProps> = ({ entity }) => 
             </>
           )}
 
-          <SectionHeader title="Miscellaneous" />
-          <DetailField label="Slug" labelNe="स्लग">{entity.slug}</DetailField>
-          <DetailField label="Version Number" labelNe="संस्करण नम्बर">{entity.version_summary.version_number}</DetailField>
-          <DetailField label="Version Author" labelNe="संस्करण लेखक">{entity.version_summary.author.name || entity.version_summary.author.slug}</DetailField>
-          <DetailField label="Change Description" labelNe="परिवर्तन विवरण">{entity.version_summary.change_description}</DetailField>
-          <DetailField label="Last Modified" labelNe="अन्तिम परिमार्जन">{formattedDate(new Date(entity.version_summary.created_at))}</DetailField>
-          <DetailField label="Attributes" labelNe="विशेषताहरू">
-            {entity.attributes ? <AttributesDisplay attributes={entity.attributes} /> : null}
-          </DetailField>
-          <DetailField label="Attributions" labelNe="स्रोतहरू">
-            {entity.attributions?.length ? (
-              <div>
-                {entity.attributions.map((attr, index) => (
-                  <div key={index} style={{ marginBottom: '8px' }}>
-                    <strong>
-                      {attr.title.en?.value || attr.title.ne?.value}
-                      {attr.title.en?.value && attr.title.ne?.value && (
-                        <><br /><span style={{ color: 'var(--text-secondary)', fontSize: '0.9em', fontWeight: 'normal' }}>{attr.title.ne.value}</span></>
-                      )}
-                    </strong>
-                    {attr.details && (
-                      <div style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
-                        {attr.details.en?.value || attr.details.ne?.value}
-                        {attr.details.en?.value && attr.details.ne?.value && (
-                          <><br /><span style={{ fontSize: '0.85em' }}>{attr.details.ne.value}</span></>
+          {entity.attributes && (
+            <>
+              <SectionHeader title="Attributes / विशेषताहरू" />
+              <tr>
+                <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
+                  <AttributesDisplay attributes={entity.attributes} />
+                </td>
+              </tr>
+            </>
+          )}
+
+          {entity.attributions && entity.attributions.length > 0 && (
+            <>
+              <SectionHeader title="Sources / स्रोतहरू" />
+              <tr>
+                <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
+                  <div>
+                    {entity.attributions.map((attr, index) => (
+                      <div key={index} style={{ marginBottom: '8px' }}>
+                        <strong>
+                          {attr.title.en?.value || attr.title.ne?.value}
+                          {attr.title.en?.value && attr.title.ne?.value && (
+                            <><br /><span style={{ color: 'var(--text-secondary)', fontSize: '0.9em', fontWeight: 'normal' }}>{attr.title.ne.value}</span></>
+                          )}
+                        </strong>
+                        {attr.details && (
+                          <div style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
+                            {attr.details.en?.value || attr.details.ne?.value}
+                            {attr.details.en?.value && attr.details.ne?.value && (
+                              <><br /><span style={{ fontSize: '0.85em' }}>{attr.details.ne.value}</span></>
+                            )}
+                          </div>
                         )}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
-            ) : null}
-          </DetailField>
+                </td>
+              </tr>
+            </>
+          )}
+
+          <SectionHeader title="System Information / प्रणाली जानकारी" />
+            <tr>
+              <td colSpan={2} style={{ padding: 0 }}>
+                <details style={{ padding: '12px 16px' }} aria-label="Version and audit information">
+                  <summary style={{ cursor: 'pointer', fontWeight: 600 }}>
+                    View Version & Audit Details / संस्करण र लेखापरीक्षण विवरण हेर्नुहोस्
+                  </summary>
+
+                  <table style={{ marginTop: '12px', width: '100%' }}>
+                    <tbody>
+                      <DetailField label="Slug" labelNe="स्लग">
+                        {entity.slug}
+                      </DetailField>
+
+                      <DetailField label="Version Number" labelNe="संस्करण नम्बर">
+                        {entity.version_summary?.version_number}
+                      </DetailField>
+
+                      <DetailField label="Version Author" labelNe="संस्करण लेखक">
+                        {entity.version_summary?.author?.name ||
+                          entity.version_summary?.author?.slug}
+                      </DetailField>
+
+                      <DetailField label="Change Description" labelNe="परिवर्तन विवरण">
+                        {entity.version_summary?.change_description}
+                      </DetailField>
+
+                      <DetailField label="Last Modified" labelNe="अन्तिम परिमार्जन">
+                        {entity.version_summary?.created_at
+                          ? formattedDate(new Date(entity.version_summary.created_at))
+                          : null}
+                      </DetailField>
+                    </tbody>
+                  </table>
+                </details>
+              </td>
+            </tr>
         </tbody>
       </table>
     </div>

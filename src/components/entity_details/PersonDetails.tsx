@@ -69,52 +69,40 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
         </div>
       )}
 
-      <div style={{ overflowX: 'auto', width: '100%', boxSizing: 'border-box' }}>
-        <table style={{
-          width: '100%',
-          borderCollapse: 'collapse',
-          border: `1px solid var(--border-color)`,
-          borderRadius: '8px',
-          overflow: 'hidden',
-          boxShadow: `0 1px 3px var(--shadow)`,
-          backgroundColor: 'var(--bg-primary)',
-          transition: 'background-color 0.3s ease, border-color 0.3s ease',
-        }}>
+      <div style={{ overflowX: 'auto', width: '100%' }}>
+        <table
+          style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            border: `1px solid var(--border-color)`,
+            borderRadius: '8px',
+            overflow: 'hidden',
+            boxShadow: `0 1px 3px var(--shadow)`,
+            backgroundColor: 'var(--bg-primary)',
+          }}
+        >
           <tbody>
-            <SectionHeader title="Personal Details" />
+
+            <SectionHeader title="Personal Details / व्यक्तिगत विवरण" />
+
             <DetailField label="ID" labelNe="आईडी">{entity.id}</DetailField>
-            <DetailField label="Name" labelNe="नाम"><EntityName names={entity.names} /></DetailField>
-            <DetailField label="Birth Date" labelNe="जन्म मिति">{personal?.birth_date ? `${personal.birth_date} A.D.` : null}</DetailField>
+
+            <DetailField label="Name" labelNe="नाम">
+              <EntityName names={entity.names} />
+            </DetailField>
+
+            <DetailField label="Birth Date" labelNe="जन्म मिति">
+              {personal?.birth_date ? `${personal.birth_date} A.D.` : null}
+            </DetailField>
+
             <DetailField label="Birth Place" labelNe="जन्म स्थान">
-              {personal?.birth_place ? (
-                <div>
-                  {personal.birth_place.description2 ? <LangText text={personal.birth_place.description2} /> : null}
-                  {personal.birth_place.location_id && (
-                    <div style={{ marginTop: '4px' }}>
-                      <EntityLink entityId={personal.birth_place.location_id}>
-                        {personal.birth_place.location_id}
-                      </EntityLink>
-                    </div>
-                  )}
-                  {!personal.birth_place.description2 && !personal.birth_place.location_id && <em>Unknown</em>}
-                </div>
-              ) : <em>Unknown</em>}
+              {personal?.birth_place?.location_id && (
+                <EntityLink entityId={personal.birth_place.location_id}>
+                  {personal.birth_place.location_id}
+                </EntityLink>
+              )}
             </DetailField>
-            <DetailField label="Citizenship Place" labelNe="नागरिकता स्थान">
-              {personal?.citizenship_place ? (
-                <div>
-                  {personal.citizenship_place.description2 ? <LangText text={personal.citizenship_place.description2} /> : null}
-                  {personal.citizenship_place.location_id && (
-                    <div style={{ marginTop: '4px' }}>
-                      <EntityLink entityId={personal.citizenship_place.location_id}>
-                        {personal.citizenship_place.location_id}
-                      </EntityLink>
-                    </div>
-                  )}
-                  {!personal.citizenship_place.description2 && !personal.citizenship_place.location_id && <em>Unknown</em>}
-                </div>
-              ) : <em>Unknown</em>}
-            </DetailField>
+
             <DetailField label="Gender" labelNe="लिङ्ग">
               {personal?.gender ? (
                 <>
@@ -125,27 +113,32 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
                 </>
               ) : null}
             </DetailField>
+
             <DetailField label="Address" labelNe="ठेगाना">
-              {personal?.address ? (
-                <div>
-                  {personal.address.description2 ? <LangText text={personal.address.description2} /> : null}
-                  {personal.address.location_id && (
-                    <div style={{ marginTop: '4px' }}>
-                      <EntityLink entityId={personal.address.location_id}>
-                        {personal.address.location_id}
-                      </EntityLink>
-                    </div>
-                  )}
-                </div>
+              {personal?.address?.location_id && (
+                <EntityLink entityId={personal.address.location_id}>
+                  {personal.address.location_id}
+                </EntityLink>
+              )}
+            </DetailField>
+
+            <DetailField label="Short Description" labelNe="छोटो विवरण">
+              {entity.short_description ? (
+                <LangText text={entity.short_description} />
               ) : null}
             </DetailField>
-            <DetailField label="Short Description" labelNe="छोटो विवरण">{entity.short_description ? <LangText text={entity.short_description} /> : null}</DetailField>
-            <DetailField label="Description" labelNe="विवरण">{entity.description ? <MarkdownText text={entity.description} /> : null}</DetailField>
+
+            <DetailField label="Description" labelNe="विवरण">
+              {entity.description ? (
+                <MarkdownText text={entity.description} />
+              ) : null}
+            </DetailField>
 
             <EducationSection education={personal?.education} />
             <OccupationalHistorySection positions={personal?.positions} />
 
-            <SectionHeader title="Electoral History" />
+            
+            <SectionHeader title="Electoral History / निर्वाचन इतिहास" />
             {electoral?.candidacies && electoral.candidacies.length > 0 ? (
               <tr>
                 <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
@@ -305,40 +298,89 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
               <DetailField label="Electoral History"><em>No electoral candidacy records found</em></DetailField>
             )}
 
-            <SectionHeader title="Miscellaneous" />
-            <DetailField label="Slug" labelNe="स्लग">{entity.slug}</DetailField>
-            <DetailField label="Version Number" labelNe="संस्करण नम्बर">{entity.version_summary.version_number}</DetailField>
-            <DetailField label="Version Author" labelNe="संस्करण लेखक">{entity.version_summary.author.name || entity.version_summary.author.slug}</DetailField>
-            <DetailField label="Change Description" labelNe="परिवर्तन विवरण">{entity.version_summary.change_description}</DetailField>
-            <DetailField label="Last Modified" labelNe="अन्तिम परिमार्जन">{formattedDate(new Date(entity.version_summary.created_at))}</DetailField>
-            <DetailField label="Created At" labelNe="सिर्जना मिति">{formattedDate(new Date(entity.created_at))}</DetailField>
-            <DetailField label="Attributes" labelNe="विशेषताहरू">
-              {entity.attributes ? <AttributesDisplay attributes={entity.attributes} /> : null}
-            </DetailField>
-            <DetailField label="Attributions" labelNe="स्रोतहरू">
-              {entity.attributions?.length ? (
-                <div>
-                  {entity.attributions.map((attr, index) => (
-                    <div key={index} style={{ marginBottom: '8px' }}>
-                      <strong>
-                        {attr.title.en?.value || attr.title.ne?.value}
-                        {attr.title.en?.value && attr.title.ne?.value && (
-                          <><br /><span style={{ color: 'var(--text-secondary)', fontSize: '0.9em', fontWeight: 'normal' }}>{attr.title.ne.value}</span></>
-                        )}
-                      </strong>
-                      {attr.details && (
-                        <div style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
-                          {attr.details.en?.value || attr.details.ne?.value}
-                          {attr.details.en?.value && attr.details.ne?.value && (
-                            <><br /><span style={{ fontSize: '0.85em' }}>{attr.details.ne.value}</span></>
+            
+            {entity.attributes && (
+              <>
+                <SectionHeader title="Attributes / विशेषताहरू" />
+                <tr>
+                  <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
+                    <AttributesDisplay attributes={entity.attributes} />
+                  </td>
+                </tr>
+              </>
+            )}
+
+          
+            {entity.attributions && entity.attributions.length > 0 && (
+              <>
+                <SectionHeader title="Attributions / स्रोतहरू" />
+                <tr>
+                  <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
+                    <div>
+                      {entity.attributions.map((attr, index) => (
+                        <div key={index} style={{ marginBottom: '10px' }}>
+                          <strong>
+                            {attr.title.en?.value || attr.title.ne?.value}
+                          </strong>
+                          {attr.details && (
+                            <div style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
+                              {attr.details.en?.value || attr.details.ne?.value}
+                            </div>
                           )}
                         </div>
-                      )}
+                      ))}
                     </div>
-                  ))}
-                </div>
-              ) : null}
-            </DetailField>
+                  </td>
+                </tr>
+              </>
+            )}
+
+          
+            <SectionHeader title="System Information / प्रणाली जानकारी" />
+
+            <tr>
+              <td colSpan={2} style={{ padding: '16px' }}>
+                <details aria-label="Version and audit information">
+                  <summary style={{ cursor: 'pointer', fontWeight: 600 }}>
+                    View Version & Audit Details / संस्करण र लेखापरीक्षण विवरण हेर्नुहोस्
+                  </summary>
+
+                  <table style={{ marginTop: '12px', width: '100%' }}>
+                    <tbody>
+                      <DetailField label="Slug" labelNe="स्लग">
+                        {entity.slug}
+                      </DetailField>
+
+                      <DetailField label="Version Number" labelNe="संस्करण नम्बर">
+                        {entity.version_summary?.version_number}
+                      </DetailField>
+
+                      <DetailField label="Version Author" labelNe="संस्करण लेखक">
+                        {entity.version_summary?.author?.name ||
+                          entity.version_summary?.author?.slug}
+                      </DetailField>
+
+                      <DetailField label="Change Description" labelNe="परिवर्तन विवरण">
+                        {entity.version_summary?.change_description}
+                      </DetailField>
+
+                      <DetailField label="Last Modified" labelNe="अन्तिम परिमार्जन">
+                        {entity.version_summary?.created_at
+                          ? formattedDate(new Date(entity.version_summary.created_at))
+                          : null}
+                      </DetailField>
+
+                      <DetailField label="Created At" labelNe="सिर्जना मिति">
+                        {entity.created_at
+                          ? formattedDate(new Date(entity.created_at))
+                          : null}
+                      </DetailField>
+                    </tbody>
+                  </table>
+                </details>
+              </td>
+            </tr>
+
           </tbody>
         </table>
       </div>
