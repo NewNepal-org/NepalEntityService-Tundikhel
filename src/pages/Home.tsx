@@ -6,7 +6,14 @@ import { getEntityPath } from '../common/identifiers';
 const Home: React.FC = () => {
   const [query, setQuery] = useState('rabi');
   const [selectedType, setSelectedType] = useState('person');
+
+  const isTagMode = selectedType === 'tags';
+
   const getFilters = () => {
+    if (isTagMode) {
+      const tags = query.split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
+      return { tags };
+    }
     switch (selectedType) {
       case 'political_party':
         return { entity_type: 'organization', sub_type: 'political_party' };
@@ -27,7 +34,7 @@ const Home: React.FC = () => {
     }
   };
 
-  const { results, total, loading, error } = useEntitySearch(query, getFilters());
+  const { results, total, loading, error } = useEntitySearch(isTagMode ? '' : query, getFilters());
 
   return (
     <div style={{
@@ -64,7 +71,7 @@ const Home: React.FC = () => {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search entities (English or Nepali)..."
+          placeholder={isTagMode ? 'Enter tags (comma-separated)...' : 'Search entities (English or Nepali)...'}
           style={{
             width: 'calc(100% - 24px)',
             padding: '12px',
@@ -88,7 +95,8 @@ const Home: React.FC = () => {
               { value: 'ngo', label: 'NGO' },
               { value: 'international_org', label: 'International Organization' },
               { value: 'location', label: 'Administrative Levels (Location)' },
-              { value: 'development_project', label: 'Development Projects' }
+              { value: 'development_project', label: 'Development Projects' },
+              { value: 'tags', label: 'Tags' },
             ].map(({ value, label }) => (
               <label key={value} style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
                 <input
@@ -96,7 +104,7 @@ const Home: React.FC = () => {
                   name="entityType"
                   value={value}
                   checked={selectedType === value}
-                  onChange={(e) => setSelectedType(e.target.value)}
+                  onChange={(e) => { setSelectedType(e.target.value); setQuery(''); }}
                 />
                 <span style={{ color: 'var(--text-inverse)' }}>{label}</span>
               </label>
@@ -133,7 +141,7 @@ const Home: React.FC = () => {
               border: '1px solid var(--border-color)',
               borderRadius: '6px'
             }}>
-              No results found for “{query}”
+              No results found for "{query}"
             </div>
           )}
 
