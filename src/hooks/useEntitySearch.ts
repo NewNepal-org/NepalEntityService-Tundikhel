@@ -5,6 +5,7 @@ import type { Entity } from '../common/nes-types';
 interface SearchFilters {
   entity_type?: string;
   sub_type?: string;
+  tags?: string[];
   limit?: number;
   offset?: number;
 }
@@ -22,7 +23,8 @@ export function useEntitySearch(query: string, filters: SearchFilters = {}) {
   const filtersString = JSON.stringify(filters);
 
   useEffect(() => {
-    if (!query || query.length < 2) {
+    const hasTags = filters.tags && filters.tags.length > 0;
+    if ((!query || query.length < 2) && !hasTags) {
       setResults([]);
       setTotal(0);
       return;
