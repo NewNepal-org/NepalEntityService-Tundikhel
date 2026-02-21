@@ -25,3 +25,4 @@ build-ssr
 *.sln
 *.sw?
 .vite
+package-lock.json
