@@ -25,3 +25,6 @@ build-ssr
 *.sln
 *.sw?
 .vite
+
+# Claude Code
+.claude/

@@ -45,6 +45,11 @@ class NESApiClient {
   async getEntity(id: string) {
     return this.request(`/entities/${encodeURIComponent(id)}`);
   }
+
+  async getTags(): Promise<string[]> {
+    const data = await this.request('/tags') as { tags: string[] };
+    return data.tags ?? [];
+  }
 }
 
 export default new NESApiClient();
