@@ -74,7 +74,7 @@ body {
   min-height: 100vh;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 a {
@@ -108,11 +108,134 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.home-bg-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url(/tudikhel-flag.jpeg);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.8;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.home-container {
+  position: relative;
+  min-height: 100vh;
+}
+
+.home-overlay {
+  background-color: var(--bg-overlay);
+  margin-top: 10vh;
+  min-height: 100vh;
+}
+
+.home-content {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.home-title {
+  color: var(--text-inverse);
+  margin: 0;
+}
+
+.home-subtitle {
+  color: var(--text-inverse);
+  margin: 0.5em 0;
+}
+
+.search-input {
+  width: calc(100% - 24px);
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+}
+
+.entity-type-options {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.entity-type-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  color: var(--text-inverse);
+}
+
+.results-count {
+  margin-bottom: 10px;
+  color: var(--text-inverse);
+}
+
 .search-result-item {
-  background-color: transparent;
-  transition: background-color 0.2s ease;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  background-color: var(--bg-primary);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100px;
+  contain: layout style paint;
 }
 
 .search-result-item:hover {
   background-color: var(--bg-secondary);
+}
+
+.search-result-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.result-title {
+  margin: 0 0 5px 0;
+  color: var(--text-primary);
+}
+
+.result-nepali {
+  margin: 0 0 5px 0;
+  color: var(--text-secondary);
+}
+
+.result-meta {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
+
+.no-results {
+  margin-top: 20px;
+  padding: 15px;
+  text-align: center;
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.error-box {
+  color: var(--error-text);
+  background: rgba(255,0,0,0.1);
+  border: 1px solid rgba(255,0,0,0.3);
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
 }

@@ -1,4 +1,4 @@
-name: Test and Deploy
+name: Deploy to Cloudflare Pages
 
 on:
   push:
@@ -7,8 +7,11 @@ on:
     branches: [ main ]
 
 jobs:
-  test-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
     
     steps:
     - uses: actions/checkout@v4
@@ -25,15 +28,12 @@ jobs:
     - name: Run linter
       run: npm run lint
     
-    - name: Configure Git
-      run: |
-        git config --global user.email "robot@newnepal.org"
-        git config --global user.name "NewNepal Robot 🤖"
+    - name: Build
+      run: npm run build
     
-    - name: Deploy
-      if: github.event_name == 'push'
-      run: |
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-        npm run deploy
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Deploy to Cloudflare Pages
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        command: pages deploy dist --project-name=nes-tundikhel
