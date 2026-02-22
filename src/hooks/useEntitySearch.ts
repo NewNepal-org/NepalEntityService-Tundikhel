@@ -48,7 +48,7 @@ export function useEntitySearch(query: string, filters: SearchFilters = {}) {
 
     const timeoutId = setTimeout(searchEntities, 300);
     return () => clearTimeout(timeoutId);
-  }, [query, filtersString, filters]);
+  }, [query, filtersString]);
 
   return { results, total, loading, error };
 }

@@ -47,7 +47,7 @@ class NESApiClient {
   }
 
   async getTags(): Promise<string[]> {
-    const data = await this.request('/tags') as { tags: string[] };
+    const data = await this.request('/entities/tags') as { tags: string[] };
     return data.tags ?? [];
   }
 }
