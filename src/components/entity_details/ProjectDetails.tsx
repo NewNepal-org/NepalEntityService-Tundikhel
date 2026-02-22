@@ -3,6 +3,7 @@ import type { Project } from '../../common/nes-types';
 import DetailField from './DetailField';
 import SectionHeader from './SectionHeader';
 import AttributesDisplay from './AttributesDisplay';
+import CollapsibleSection from './CollapsibleSection';
 import { formattedDate } from '../../utils/date';
 
 interface ProjectDetailsProps {
@@ -54,7 +55,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ entity }) => {
         transition: 'background-color 0.3s ease, border-color 0.3s ease'
       }}>
         <tbody>
-          <SectionHeader title="Project Details" />
+          <SectionHeader title="Project Details" titleNe="परियोजना विवरण" />
           <DetailField label="ID" labelNe="आईडी">{entity.id}</DetailField>
           <DetailField label="Stage" labelNe="चरण">
             {entity.stage ? (
@@ -79,41 +80,49 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ entity }) => {
             </DetailField>
           )}
 
-          <SectionHeader title="Timeline" />
-          <DetailField label="Approval Date" labelNe="स्वीकृति मिति">{approvalDate}</DetailField>
-          <DetailField label="Start Date" labelNe="सुरु मिति">{startDate}</DetailField>
-          <DetailField label="Completion Date" labelNe="समाप्ति मिति">{completionDate}</DetailField>
+          {(approvalDate || startDate || completionDate) && (
+            <>
+              <SectionHeader title="Timeline" titleNe="समयरेखा" />
+              <DetailField label="Approval Date" labelNe="स्वीकृति मिति">{approvalDate}</DetailField>
+              <DetailField label="Start Date" labelNe="सुरु मिति">{startDate}</DetailField>
+              <DetailField label="Completion Date" labelNe="समाप्ति मिति">{completionDate}</DetailField>
+            </>
+          )}
 
-          <SectionHeader title="Financing" />
-          <DetailField label="Total Commitment" labelNe="कुल प्रतिबद्धता">
-            {entity.total_commitment ? formatCurrency(entity.total_commitment, 'USD') : null}
-          </DetailField>
-          <DetailField label="Total Disbursement" labelNe="कुल वितरण">
-            {entity.total_disbursement ? formatCurrency(entity.total_disbursement, 'USD') : null}
-          </DetailField>
-          {entity.financing && entity.financing.length > 0 && (
-            <DetailField label="Financing Sources" labelNe="वित्तीय स्रोतहरू">
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {entity.financing.map((f, idx) => (
-                  <div key={idx} style={{
-                    padding: '8px',
-                    backgroundColor: 'var(--bg-secondary)',
-                    borderRadius: '4px',
-                    fontSize: '0.9em'
-                  }}>
-                    <div><strong>{f.donor}</strong></div>
-                    {f.amount && <div>{formatCurrency(f.amount, f.currency)}</div>}
-                    {f.assistance_type && <div style={{ color: 'var(--text-secondary)' }}>Type: {f.assistance_type}</div>}
-                    {f.transaction_type && <div style={{ color: 'var(--text-secondary)' }}>Transaction: {f.transaction_type}</div>}
+          {(entity.total_commitment != null || entity.total_disbursement != null || (entity.financing && entity.financing.length > 0)) && (
+            <>
+              <SectionHeader title="Financing" titleNe="वित्तीय" />
+              <DetailField label="Total Commitment" labelNe="कुल प्रतिबद्धता">
+                {entity.total_commitment != null ? formatCurrency(entity.total_commitment, 'USD') : null}
+              </DetailField>
+              <DetailField label="Total Disbursement" labelNe="कुल वितरण">
+                {entity.total_disbursement != null ? formatCurrency(entity.total_disbursement, 'USD') : null}
+              </DetailField>
+              {entity.financing && entity.financing.length > 0 && (
+                <DetailField label="Financing Sources" labelNe="वित्तीय स्रोतहरू">
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {entity.financing.map((f, idx) => (
+                      <div key={idx} style={{
+                        padding: '8px',
+                        backgroundColor: 'var(--bg-secondary)',
+                        borderRadius: '4px',
+                        fontSize: '0.9em'
+                      }}>
+                        <div><strong>{f.donor}</strong></div>
+                        {f.amount && <div>{formatCurrency(f.amount, f.currency)}</div>}
+                        {f.assistance_type && <div style={{ color: 'var(--text-secondary)' }}>Type: {f.assistance_type}</div>}
+                        {f.transaction_type && <div style={{ color: 'var(--text-secondary)' }}>Transaction: {f.transaction_type}</div>}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </DetailField>
+                </DetailField>
+              )}
+            </>
           )}
 
           {entity.sectors && entity.sectors.length > 0 && (
             <>
-              <SectionHeader title="Sectors" />
+              <SectionHeader title="Sectors" titleNe="क्षेत्रहरू" />
               <DetailField label="Sectors" labelNe="क्षेत्रहरू">
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   {entity.sectors.map((s, idx) => (
@@ -124,31 +133,47 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ entity }) => {
             </>
           )}
 
-          <SectionHeader title="Miscellaneous" />
-          <DetailField label="Slug" labelNe="स्लग">{entity.slug}</DetailField>
-          <DetailField label="Version Number" labelNe="संस्करण नम्बर">{entity.version_summary.version_number}</DetailField>
-          <DetailField label="Version Author" labelNe="संस्करण लेखक">{entity.version_summary.author.name || entity.version_summary.author.slug}</DetailField>
-          <DetailField label="Change Description" labelNe="परिवर्तन विवरण">{entity.version_summary.change_description}</DetailField>
-          <DetailField label="Last Modified" labelNe="अन्तिम परिमार्जन">{formattedDate(new Date(entity.version_summary.created_at))}</DetailField>
-          <DetailField label="Attributes" labelNe="विशेषताहरू">
-            {entity.attributes ? <AttributesDisplay attributes={entity.attributes} /> : null}
-          </DetailField>
-          <DetailField label="Attributions" labelNe="स्रोतहरू">
-            {entity.attributions?.length ? (
-              <div>
-                {entity.attributions.map((attr, index) => (
-                  <div key={index} style={{ marginBottom: '8px' }}>
-                    <strong>{attr.title.en?.value || attr.title.ne?.value}</strong>
-                    {attr.details && (
-                      <div style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
-                        {attr.details.en?.value || attr.details.ne?.value}
+          {entity.attributes && Object.keys(entity.attributes).length > 0 && (
+            <>
+              <SectionHeader title="Attributes" titleNe="विशेषताहरू" />
+              <tr>
+                <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
+                  <AttributesDisplay attributes={entity.attributes} />
+                </td>
+              </tr>
+            </>
+          )}
+
+          {entity.attributions && entity.attributions.length > 0 && (
+            <>
+              <SectionHeader title="Attributions" titleNe="स्रोतहरू" />
+              <tr>
+                <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
+                  <div>
+                    {entity.attributions.map((attr, index) => (
+                      <div key={index} style={{ marginBottom: '8px' }}>
+                        <strong>{attr.title.en?.value || attr.title.ne?.value}</strong>
+                        {attr.details && (
+                          <div style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
+                            {attr.details.en?.value || attr.details.ne?.value}
+                          </div>
+                        )}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
-            ) : null}
-          </DetailField>
+                </td>
+              </tr>
+            </>
+          )}
+
+          <CollapsibleSection title="View Version & Audit Details" titleNe="संस्करण र लेखापरीक्षण विवरण हेर्नुहोस्" defaultOpen={false}>
+            <DetailField label="Slug" labelNe="स्लग">{entity.slug}</DetailField>
+            <DetailField label="Version Number" labelNe="संस्करण नम्बर">{entity.version_summary.version_number}</DetailField>
+            <DetailField label="Version Author" labelNe="संस्करण लेखक">{entity.version_summary.author.name || entity.version_summary.author.slug}</DetailField>
+            <DetailField label="Change Description" labelNe="परिवर्तन विवरण">{entity.version_summary.change_description}</DetailField>
+            <DetailField label="Last Modified" labelNe="अन्तिम परिमार्जन">{formattedDate(new Date(entity.version_summary.created_at))}</DetailField>
+            <DetailField label="Created At" labelNe="सिर्जना मिति">{formattedDate(new Date(entity.created_at))}</DetailField>
+          </CollapsibleSection>
         </tbody>
       </table>
     </div>

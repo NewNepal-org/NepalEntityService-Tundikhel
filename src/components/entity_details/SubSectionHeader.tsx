@@ -9,8 +9,8 @@ const SubSectionHeader: React.FC<SubSectionHeaderProps> = ({ title }) => {
     <tr>
       <td colSpan={2} style={{ 
         padding: '8px', 
-        backgroundColor: '#3b82f6', 
-        color: 'white',
+        backgroundColor: 'var(--table-header-bg)', 
+        color: 'var(--text-inverse)',
         fontWeight: 'bold', 
         fontSize: '0.95em'
       }}>

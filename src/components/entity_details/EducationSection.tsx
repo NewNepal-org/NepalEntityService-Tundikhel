@@ -11,13 +11,9 @@ interface EducationSectionProps {
 const EducationSection: React.FC<EducationSectionProps> = ({ education }) => {
   const edu = education?.[0];
   
+  // Don't render anything if there's no education data
   if (!edu || (!edu.institution && !edu.degree && !edu.field && !edu.start_year && !edu.end_year)) {
-    return (
-      <>
-        <SubSectionHeader title="Education" />
-        <DetailField label="Education"><em>No Records found</em></DetailField>
-      </>
-    );
+    return null;
   }
 
   return (

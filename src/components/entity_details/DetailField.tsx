@@ -7,6 +7,12 @@ interface DetailFieldProps {
 }
 
 const DetailField: React.FC<DetailFieldProps> = ({ label, labelNe, children }) => {
+  
+ 
+  if (children === null || children === undefined || children === '' || (Array.isArray(children) && children.length === 0)) {
+    return null;
+  }
+
   return (
     <tr style={{ borderBottom: `1px solid var(--border-light)` }}>
       <td style={{
@@ -34,7 +40,7 @@ const DetailField: React.FC<DetailFieldProps> = ({ label, labelNe, children }) =
         lineHeight: '1.6',
         transition: 'color 0.3s ease'
       }}>
-        {children || <em style={{ color: 'var(--text-tertiary)' }}>No value</em>}
+        {children}
       </td>
     </tr>
   );
