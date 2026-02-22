@@ -199,7 +199,7 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
                               flexWrap: 'wrap'
                             }}>
                               <span style={{ fontWeight: '500' }}>
-                                {candidacy.position?.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                {candidacy.position?.replace(/_/g, ' ')?.replace(/\b\w/g, l => l.toUpperCase())}
                                 {candidacy.pa_subdivision && ` (${candidacy.pa_subdivision})`}
                               </span>
                               <span style={{ color: 'var(--text-secondary)' }}>•</span>
@@ -321,18 +321,24 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
           
             {entity.attributions && entity.attributions.length > 0 && (
               <>
-                <SectionHeader title="Attributions / स्रोतहरू" />
+                <SectionHeader title="Sources / स्रोतहरू" />
                 <tr>
                   <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
                     <div>
                       {entity.attributions.map((attr, index) => (
-                        <div key={index} style={{ marginBottom: '10px' }}>
+                        <div key={index} style={{ marginBottom: '8px' }}>
                           <strong>
                             {attr.title.en?.value || attr.title.ne?.value}
+                            {attr.title.en?.value && attr.title.ne?.value && (
+                              <><br /><span style={{ color: 'var(--text-secondary)', fontSize: '0.9em', fontWeight: 'normal' }}>{attr.title.ne.value}</span></>
+                            )}
                           </strong>
                           {attr.details && (
                             <div style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
                               {attr.details.en?.value || attr.details.ne?.value}
+                              {attr.details.en?.value && attr.details.ne?.value && (
+                                <><br /><span style={{ fontSize: '0.85em' }}>{attr.details.ne.value}</span></>
+                              )}
                             </div>
                           )}
                         </div>
