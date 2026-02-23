@@ -28,4 +28,3 @@ build-ssr
 
 # Claude Code
 .claude/
-package-lock.json
