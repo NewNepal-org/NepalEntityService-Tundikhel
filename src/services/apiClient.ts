@@ -3,6 +3,7 @@ import { getApiUrl } from '../config/environment';
 interface SearchFilters {
   entity_type?: string;
   sub_type?: string;
+  tags?: string[];
   limit?: number;
   offset?: number;
 }
@@ -33,11 +34,21 @@ class NESApiClient {
   }
 
   async searchEntities(query: string, filters: SearchFilters = {}) {
-    return this.request('/entities', { query, ...filters });
+    const { tags, ...rest } = filters;
+    return this.request('/entities', {
+      query: query || undefined,
+      ...rest,
+      ...(tags && tags.length > 0 ? { tags: tags.join(',') } : {}),
+    });
   }
 
   async getEntity(id: string) {
     return this.request(`/entities/${encodeURIComponent(id)}`);
+  }
+
+  async getTags(): Promise<string[]> {
+    const data = await this.request('/entities/tags') as { tags: string[] };
+    return data.tags ?? [];
   }
 }
 
