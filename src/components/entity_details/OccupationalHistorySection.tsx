@@ -11,13 +11,9 @@ interface OccupationalHistorySectionProps {
 const OccupationalHistorySection: React.FC<OccupationalHistorySectionProps> = ({ positions }) => {
   const pos = positions?.[0];
   
+  // Don't render anything if there's no position data
   if (!pos || (!pos.title && !pos.organization && !pos.start_date && !pos.end_date && !pos.description)) {
-    return (
-      <>
-        <SubSectionHeader title="Occupational History" />
-        <DetailField label="Positions"><em>No Records found</em></DetailField>
-      </>
-    );
+    return null;
   }
 
   return (

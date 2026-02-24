@@ -2,22 +2,26 @@ import React from 'react';
 
 interface SectionHeaderProps {
   title: string;
+  titleNe?: string;
 }
 
-const SectionHeader: React.FC<SectionHeaderProps> = ({ title }) => {
+const SectionHeader: React.FC<SectionHeaderProps> = ({ title, titleNe }) => {
   return (
     <tr>
       <td colSpan={2} style={{
-        padding: '16px 20px',
-        backgroundColor: 'var(--table-header-bg)',
-        color: 'white',
-        fontWeight: '600',
+        padding: '14px 16px',
+        fontWeight: '700',
         fontSize: '1.05em',
-        letterSpacing: '0.3px',
-        borderTop: `2px solid var(--table-header-border)`,
-        transition: 'background-color 0.3s ease, border-color 0.3s ease'
+        backgroundColor: 'var(--table-header-bg)',
+        color: 'var(--text-inverse)',
+        borderTop: `2px solid var(--border-color)`,
+        borderBottom: `1px solid var(--border-color)`,
+        transition: 'background-color 0.3s ease'
       }}>
         {title}
+        {titleNe && (
+          <span style={{ marginLeft: '8px', fontWeight: '600' }}>/ {titleNe}</span>
+        )}
       </td>
     </tr>
   );

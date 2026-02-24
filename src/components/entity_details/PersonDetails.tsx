@@ -9,6 +9,7 @@ import SectionHeader from './SectionHeader';
 import EntityLink from './EntityLink';
 import AttributesDisplay from './AttributesDisplay';
 import TagsDisplay from './TagsDisplay';
+import CollapsibleSection from './CollapsibleSection';
 
 import EducationSection from './EducationSection';
 import OccupationalHistorySection from './OccupationalHistorySection';
@@ -81,14 +82,14 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
           transition: 'background-color 0.3s ease, border-color 0.3s ease',
         }}>
           <tbody>
-            <SectionHeader title="Personal Details" />
+            <SectionHeader title="Personal Details" titleNe="व्यक्तिगत विवरण" />
             <DetailField label="ID" labelNe="आईडी">{entity.id}</DetailField>
             <DetailField label="Name" labelNe="नाम"><EntityName names={entity.names} /></DetailField>
             <DetailField label="Birth Date" labelNe="जन्म मिति">{personal?.birth_date ? `${personal.birth_date} A.D.` : null}</DetailField>
             <DetailField label="Birth Place" labelNe="जन्म स्थान">
-              {personal?.birth_place ? (
+              {personal?.birth_place && (personal.birth_place.description2 || personal.birth_place.location_id) ? (
                 <div>
-                  {personal.birth_place.description2 ? <LangText text={personal.birth_place.description2} /> : null}
+                  {personal.birth_place.description2 && <LangText text={personal.birth_place.description2} />}
                   {personal.birth_place.location_id && (
                     <div style={{ marginTop: '4px' }}>
                       <EntityLink entityId={personal.birth_place.location_id}>
@@ -96,14 +97,13 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
                       </EntityLink>
                     </div>
                   )}
-                  {!personal.birth_place.description2 && !personal.birth_place.location_id && <em>Unknown</em>}
                 </div>
-              ) : <em>Unknown</em>}
+              ) : null}
             </DetailField>
             <DetailField label="Citizenship Place" labelNe="नागरिकता स्थान">
-              {personal?.citizenship_place ? (
+              {personal?.citizenship_place && (personal.citizenship_place.description2 || personal.citizenship_place.location_id) ? (
                 <div>
-                  {personal.citizenship_place.description2 ? <LangText text={personal.citizenship_place.description2} /> : null}
+                  {personal.citizenship_place.description2 && <LangText text={personal.citizenship_place.description2} />}
                   {personal.citizenship_place.location_id && (
                     <div style={{ marginTop: '4px' }}>
                       <EntityLink entityId={personal.citizenship_place.location_id}>
@@ -111,9 +111,8 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
                       </EntityLink>
                     </div>
                   )}
-                  {!personal.citizenship_place.description2 && !personal.citizenship_place.location_id && <em>Unknown</em>}
                 </div>
-              ) : <em>Unknown</em>}
+              ) : null}
             </DetailField>
             <DetailField label="Gender" labelNe="लिङ्ग">
               {personal?.gender ? (
@@ -126,9 +125,9 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
               ) : null}
             </DetailField>
             <DetailField label="Address" labelNe="ठेगाना">
-              {personal?.address ? (
+              {personal?.address && (personal.address.description2 || personal.address.location_id) ? (
                 <div>
-                  {personal.address.description2 ? <LangText text={personal.address.description2} /> : null}
+                  {personal.address.description2 && <LangText text={personal.address.description2} />}
                   {personal.address.location_id && (
                     <div style={{ marginTop: '4px' }}>
                       <EntityLink entityId={personal.address.location_id}>
@@ -145,15 +144,16 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
             <EducationSection education={personal?.education} />
             <OccupationalHistorySection positions={personal?.positions} />
 
-            <SectionHeader title="Electoral History" />
-            {electoral?.candidacies && electoral.candidacies.length > 0 ? (
-              <tr>
-                <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    {[...electoral.candidacies]
-                      .sort((a, b) => b.election_year - a.election_year)
-                      .map((candidacy, index) => (
-                      <div
+            {electoral?.candidacies && electoral.candidacies.length > 0 && (
+              <>
+                <SectionHeader title="Electoral History" titleNe="निर्वाचन इतिहास" />
+                <tr>
+                  <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                      {[...electoral.candidacies]
+                        .sort((a, b) => b.election_year - a.election_year)
+                        .map((candidacy, index) => (
+                        <div
                         key={
                           candidacy.candidate_id &&
                           candidacy.election_year &&
@@ -301,44 +301,58 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({ entity }) => {
                   </div>
                 </td>
               </tr>
-            ) : (
-              <DetailField label="Electoral History"><em>No electoral candidacy records found</em></DetailField>
+              </>
             )}
 
-            <SectionHeader title="Miscellaneous" />
-            <DetailField label="Slug" labelNe="स्लग">{entity.slug}</DetailField>
-            <DetailField label="Version Number" labelNe="संस्करण नम्बर">{entity.version_summary.version_number}</DetailField>
-            <DetailField label="Version Author" labelNe="संस्करण लेखक">{entity.version_summary.author.name || entity.version_summary.author.slug}</DetailField>
-            <DetailField label="Change Description" labelNe="परिवर्तन विवरण">{entity.version_summary.change_description}</DetailField>
-            <DetailField label="Last Modified" labelNe="अन्तिम परिमार्जन">{formattedDate(new Date(entity.version_summary.created_at))}</DetailField>
-            <DetailField label="Created At" labelNe="सिर्जना मिति">{formattedDate(new Date(entity.created_at))}</DetailField>
-            <DetailField label="Attributes" labelNe="विशेषताहरू">
-              {entity.attributes ? <AttributesDisplay attributes={entity.attributes} /> : null}
-            </DetailField>
-            <DetailField label="Attributions" labelNe="स्रोतहरू">
-              {entity.attributions?.length ? (
-                <div>
-                  {entity.attributions.map((attr, index) => (
-                    <div key={index} style={{ marginBottom: '8px' }}>
-                      <strong>
-                        {attr.title.en?.value || attr.title.ne?.value}
-                        {attr.title.en?.value && attr.title.ne?.value && (
-                          <><br /><span style={{ color: 'var(--text-secondary)', fontSize: '0.9em', fontWeight: 'normal' }}>{attr.title.ne.value}</span></>
-                        )}
-                      </strong>
-                      {attr.details && (
-                        <div style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
-                          {attr.details.en?.value || attr.details.ne?.value}
-                          {attr.details.en?.value && attr.details.ne?.value && (
-                            <><br /><span style={{ fontSize: '0.85em' }}>{attr.details.ne.value}</span></>
+            {entity.attributes && Object.keys(entity.attributes).length > 0 && (
+              <>
+                <SectionHeader title="Attributes" titleNe="विशेषताहरू" />
+                <tr>
+                  <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
+                    <AttributesDisplay attributes={entity.attributes} />
+                  </td>
+                </tr>
+              </>
+            )}
+
+            {entity.attributions && entity.attributions.length > 0 && (
+              <>
+                <SectionHeader title="Attributions" titleNe="स्रोतहरू" />
+                <tr>
+                  <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
+                    <div>
+                      {entity.attributions.map((attr, index) => (
+                        <div key={index} style={{ marginBottom: '8px' }}>
+                          <strong>
+                            {attr.title.en?.value || attr.title.ne?.value}
+                            {attr.title.en?.value && attr.title.ne?.value && (
+                              <><br /><span style={{ color: 'var(--text-secondary)', fontSize: '0.9em', fontWeight: 'normal' }}>{attr.title.ne.value}</span></>
+                            )}
+                          </strong>
+                          {attr.details && (
+                            <div style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
+                              {attr.details.en?.value || attr.details.ne?.value}
+                              {attr.details.en?.value && attr.details.ne?.value && (
+                                <><br /><span style={{ fontSize: '0.85em' }}>{attr.details.ne.value}</span></>
+                              )}
+                            </div>
                           )}
                         </div>
-                      )}
+                      ))}
                     </div>
-                  ))}
-                </div>
-              ) : null}
-            </DetailField>
+                  </td>
+                </tr>
+              </>
+            )}
+
+            <CollapsibleSection title="View Version & Audit Details" titleNe="संस्करण र लेखापरीक्षण विवरण हेर्नुहोस्" defaultOpen={false}>
+              <DetailField label="Slug" labelNe="स्लग">{entity.slug}</DetailField>
+              <DetailField label="Version Number" labelNe="संस्करण नम्बर">{entity.version_summary.version_number}</DetailField>
+              <DetailField label="Version Author" labelNe="संस्करण लेखक">{entity.version_summary.author.name || entity.version_summary.author.slug}</DetailField>
+              <DetailField label="Change Description" labelNe="परिवर्तन विवरण">{entity.version_summary.change_description}</DetailField>
+              <DetailField label="Last Modified" labelNe="अन्तिम परिमार्जन">{formattedDate(new Date(entity.version_summary.created_at))}</DetailField>
+              <DetailField label="Created At" labelNe="सिर्जना मिति">{formattedDate(new Date(entity.created_at))}</DetailField>
+            </CollapsibleSection>
           </tbody>
         </table>
       </div>

@@ -9,6 +9,7 @@ import SectionHeader from './SectionHeader';
 import EntityLink from './EntityLink';
 import AttributesDisplay from './AttributesDisplay';
 import TagsDisplay from './TagsDisplay';
+import CollapsibleSection from './CollapsibleSection';
 import { formattedDate } from '../../utils/date';
 
 interface LocationDetailsProps {
@@ -55,7 +56,7 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ entity }) => {
         transition: 'background-color 0.3s ease, border-color 0.3s ease'
       }}>
         <tbody>
-          <SectionHeader title="Location Details" />
+          <SectionHeader title="Location Details" titleNe="स्थान विवरण" />
           <DetailField label="ID" labelNe="आईडी">{entity.id}</DetailField>
           <DetailField label="Name" labelNe="नाम"><EntityName names={entity.names} /></DetailField>
           <DetailField label="Type" labelNe="प्रकार">
@@ -83,41 +84,56 @@ const LocationDetails: React.FC<LocationDetailsProps> = ({ entity }) => {
           <DetailField label="Longitude" labelNe="देशान्तर">{entity.lng}</DetailField>
           <DetailField label="Short Description" labelNe="छोटो विवरण">{entity.short_description ? <LangText text={entity.short_description} /> : null}</DetailField>
           <DetailField label="Description" labelNe="विवरण">{entity.description ? <MarkdownText text={entity.description} /> : null}</DetailField>
-          <DetailField label="Created At" labelNe="सिर्जना मिति">{entity.created_at}</DetailField>
 
-          <SectionHeader title="Miscellaneous" />
-          <DetailField label="Slug" labelNe="स्लग">{entity.slug}</DetailField>
-          <DetailField label="Version Number" labelNe="संस्करण नम्बर">{entity.version_summary.version_number}</DetailField>
-          <DetailField label="Version Author" labelNe="संस्करण लेखक">{entity.version_summary.author.name || entity.version_summary.author.slug}</DetailField>
-          <DetailField label="Change Description" labelNe="परिवर्तन विवरण">{entity.version_summary.change_description}</DetailField>
-          <DetailField label="Last Modified" labelNe="अन्तिम परिमार्जन">{formattedDate(new Date(entity.version_summary.created_at))}</DetailField>
-          <DetailField label="Attributes" labelNe="विशेषताहरू">
-            {entity.attributes ? <AttributesDisplay attributes={entity.attributes} /> : null}
-          </DetailField>
-          <DetailField label="Attributions" labelNe="स्रोतहरू">
-            {entity.attributions?.length ? (
-              <div>
-                {entity.attributions.map((attr, index) => (
-                  <div key={index} style={{ marginBottom: '8px' }}>
-                    <strong>
-                      {attr.title.en?.value || attr.title.ne?.value}
-                      {attr.title.en?.value && attr.title.ne?.value && (
-                        <><br /><span style={{ color: 'var(--text-secondary)', fontSize: '0.9em', fontWeight: 'normal' }}>{attr.title.ne.value}</span></>
-                      )}
-                    </strong>
-                    {attr.details && (
-                      <div style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
-                        {attr.details.en?.value || attr.details.ne?.value}
-                        {attr.details.en?.value && attr.details.ne?.value && (
-                          <><br /><span style={{ fontSize: '0.85em' }}>{attr.details.ne.value}</span></>
+          {entity.attributes && Object.keys(entity.attributes).length > 0 && (
+            <>
+              <SectionHeader title="Attributes" titleNe="विशेषताहरू" />
+              <tr>
+                <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
+                  <AttributesDisplay attributes={entity.attributes} />
+                </td>
+              </tr>
+            </>
+          )}
+
+          {entity.attributions && entity.attributions.length > 0 && (
+            <>
+              <SectionHeader title="Attributions" titleNe="स्रोतहरू" />
+              <tr>
+                <td colSpan={2} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-primary)' }}>
+                  <div>
+                    {entity.attributions.map((attr, index) => (
+                      <div key={index} style={{ marginBottom: '8px' }}>
+                        <strong>
+                          {attr.title.en?.value || attr.title.ne?.value}
+                          {attr.title.en?.value && attr.title.ne?.value && (
+                            <><br /><span style={{ color: 'var(--text-secondary)', fontSize: '0.9em', fontWeight: 'normal' }}>{attr.title.ne.value}</span></>
+                          )}
+                        </strong>
+                        {attr.details && (
+                          <div style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
+                            {attr.details.en?.value || attr.details.ne?.value}
+                            {attr.details.en?.value && attr.details.ne?.value && (
+                              <><br /><span style={{ fontSize: '0.85em' }}>{attr.details.ne.value}</span></>
+                            )}
+                          </div>
                         )}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
-            ) : null}
-          </DetailField>
+                </td>
+              </tr>
+            </>
+          )}
+
+          <CollapsibleSection title="View Version & Audit Details" titleNe="संस्करण र लेखापरीक्षण विवरण हेर्नुहोस्" defaultOpen={false}>
+            <DetailField label="Slug" labelNe="स्लग">{entity.slug}</DetailField>
+            <DetailField label="Version Number" labelNe="संस्करण नम्बर">{entity.version_summary.version_number}</DetailField>
+            <DetailField label="Version Author" labelNe="संस्करण लेखक">{entity.version_summary.author.name || entity.version_summary.author.slug}</DetailField>
+            <DetailField label="Change Description" labelNe="परिवर्तन विवरण">{entity.version_summary.change_description}</DetailField>
+            <DetailField label="Last Modified" labelNe="अन्तिम परिमार्जन">{formattedDate(new Date(entity.version_summary.created_at))}</DetailField>
+            <DetailField label="Created At" labelNe="सिर्जना मिति">{formattedDate(new Date(entity.created_at))}</DetailField>
+          </CollapsibleSection>
         </tbody>
       </table>
     </div>
