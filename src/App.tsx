@@ -123,6 +123,15 @@ function App() {
 								<button style={navButtonStyle}>NES Docs</button>
 							</a>
 
+							<a
+								href="https://stats.uptimerobot.com/lwVRcc5suC"
+								target="_blank"
+								rel="noopener noreferrer"
+								style={{ textDecoration: 'none' }}
+							>
+								<button style={navButtonStyle}>Site Status</button>
+							</a>
+
 							<ThemeToggle />
 
 							<a
@@ -179,6 +188,15 @@ function App() {
 								style={{ textDecoration: 'none' }}
 							>
 								<button style={navButtonStyle}>NES Docs</button>
+							</a>
+
+							<a
+								href="https://stats.uptimerobot.com/lwVRcc5suC"
+								target="_blank"
+								rel="noopener noreferrer"
+								style={{ textDecoration: 'none' }}
+							>
+								<button style={navButtonStyle}>Site Status</button>
 							</a>
 
 							<ThemeToggle />
